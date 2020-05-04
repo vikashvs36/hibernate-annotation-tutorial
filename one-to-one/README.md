@@ -40,7 +40,7 @@ As you can see, I am not using spring-web dependency so I am using CommandLineRu
     	}
     }
 
-### Object Relation Mapping - Unidirectional
+### Object Relation Mapping
 
 We will discuss three different type of mapping supported by hibernate, which is given below: 
 
@@ -48,7 +48,7 @@ We will discuss three different type of mapping supported by hibernate, which is
 2. Foreign key
 3. Join table.  
 
-**Same primary key**
+**Same primary key - Unidirectional**
 
 In this approach, Hibernate will insure that it will use a common primary key value in both the table.
 
@@ -126,3 +126,41 @@ there is only one Unidirectional mapping so need to map bidirectional as well.
 
      Hibernate: select address0_.id as id1_0_0_, address0_.state as state2_0_0_ from address address0_ where address0_.id=?
      Address : Address(id=2, state=Noida)
+     
+**Same primary key - Bidirectional**
+
+The term “bidirectional” literally means “functioning in two directions”,  it means that we are able to access Object A 
+from Object B, and Object B from Object A. and we will able to operate all operation from both side. Till now, We are able 
+to get address object from user side but Address is unknown that associated from which User.
+
+For access User from Address following annotation needs to integrate:
+
+    @Entity
+    public class Address {
+        @Id
+        @GeneratedValue
+        private Long id;
+        private String state;
+    
+        @OneToOne(mappedBy = "address", cascade = CascadeType.ALL)
+        private User user;
+    }  
+  
+Need to understand *@OneToOne(mappedBy = "address", cascade = CascadeType.ALL).* 
+
+**@OneToOne :** @OneToOne annotation is need to mark on User type property in Address object. 
+
+**mappedBy :** The value of mappedBy is the name of the association-mapping attribute on the owning side.  
+mappedBy attribute are always put(annotated) on the inverse side of relation ship 
+
+**cascade :** Cascade is mapped for which type of operation wants to operate from Address side.
+
+> Output
+
+    // Hibernate log
+    Hibernate: select address0_.id as id1_0_0_, address0_.state as state2_0_0_, user1_.id as id1_1_1_, user1_.password as password2_1_1_, user1_.username as username3_1_1_ from address address0_ left outer join user user1_ on address0_.id=user1_.id where address0_.id=?
+    // Address Object log
+    Address : Address{id=2, state='Noida'}, User : User{id=2, username='Anil', password='gupta'}
+
+
+ 

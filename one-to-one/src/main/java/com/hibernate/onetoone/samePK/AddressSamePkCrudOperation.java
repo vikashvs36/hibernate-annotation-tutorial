@@ -14,7 +14,7 @@ public class AddressSamePkCrudOperation {
     private AddressDao addressDao;
 
     public void crudOperation() {
-        System.out.println("------------ :: Address crudOperation :: ------------");
+        System.out.println("------------ Address :: crudOperation ------------");
         // Find User by Id
         System.out.println("############ :: findUserById :: ############");
         findUserById(2);
@@ -25,7 +25,7 @@ public class AddressSamePkCrudOperation {
     private Address findUserById(long id) {
         Optional<Address> optional = addressDao.findById(id);
         Address address = optional.isPresent() ? optional.get() : null;
-        System.out.println("Address : "+address);
+        System.out.println("Address : "+address+", User : "+address.getUser());
         return address;
     }
 

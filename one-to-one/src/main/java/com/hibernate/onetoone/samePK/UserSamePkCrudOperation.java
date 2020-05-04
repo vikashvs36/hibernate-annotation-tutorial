@@ -6,9 +6,7 @@ import com.hibernate.onetoone.samePK.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class UserSamePkCrudOperation {
@@ -17,7 +15,7 @@ public class UserSamePkCrudOperation {
     private UserDao userDao;
 
     public void crudOperation() {
-        System.out.println("------------ :: crudOperation :: ------------");
+        System.out.println("------------ USER :: crudOperation ------------");
 
         // Save User object
         System.out.println("############ :: saveAll :: ############");
@@ -51,7 +49,7 @@ public class UserSamePkCrudOperation {
     private User findUserById(long id) {
         Optional<User> optional = userDao.findById(id);
         User user = optional.isPresent() ? optional.get() : null;
-        System.out.println("User : "+user);
+        System.out.println("User : "+user+", Address : "+user.getAddress());
         return user;
     }
 
@@ -66,7 +64,7 @@ public class UserSamePkCrudOperation {
     // FindAll Users.
     private void findAll() {
         List<User> users = userDao.findAll();
-        users.forEach(System.out::println);
+        users.forEach(user -> System.out.println("User : "+user+", Address : "+user.getAddress()));
     }
 
 }
