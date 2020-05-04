@@ -109,3 +109,20 @@ After run this application below query will be perform by hibernate:
     Hibernate: insert into address (state, id) values (?, ?)
     Hibernate: insert into user (password, username, id) values (?, ?, ?)
     
+### Unidirectional - output
+
+As log of the console, if you are going to find user then hibernate will get address as well because there are a relation 
+between user and address which is given below :   
+
+    // hibernate log
+    Hibernate: select user0_.id as id1_1_0_, user0_.password as password2_1_0_, user0_.username as username3_1_0_ from user user0_ where user0_.id=?
+    Hibernate: select address0_.id as id1_0_0_, address0_.state as state2_0_0_ from address address0_ where address0_.id=?
+    
+    // find user by id
+    User(id=1, username=Vikash, password=singh, address=Address(id=1, state=Delhi))
+    
+But if you find address then user will not come as given below because there are not relation from Address to User object. I mean, 
+there is only one Unidirectional mapping so need to map bidirectional as well.
+
+     Hibernate: select address0_.id as id1_0_0_, address0_.state as state2_0_0_ from address address0_ where address0_.id=?
+     Address : Address(id=2, state=Noida)
