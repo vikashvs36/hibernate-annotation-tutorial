@@ -16,7 +16,7 @@ public class OneToOneApplication implements CommandLineRunner {
 	}
 
 	@Autowired
-	private static UserDao userDao;
+	private UserDao userDao;
 
 	@Override
 	public void run(String... args) throws Exception {
@@ -25,7 +25,7 @@ public class OneToOneApplication implements CommandLineRunner {
 	}
 
 	// Same primary key - Unidirectional
-	private static void samePkUnidirectional() {
+	private void samePkUnidirectional() {
 		User user = new User("Vikash", "singh", new Address("Delhi"));
 		userDao.save(user);
 	}
