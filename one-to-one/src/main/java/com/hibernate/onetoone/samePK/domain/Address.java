@@ -1,4 +1,4 @@
-package com.hibernate.onetoone.unidirectional.samePK.domain;
+package com.hibernate.onetoone.samePK.domain;
 
 import lombok.Data;
 

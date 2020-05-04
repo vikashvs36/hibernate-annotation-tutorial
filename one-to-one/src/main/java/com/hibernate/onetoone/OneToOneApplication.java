@@ -1,8 +1,7 @@
 package com.hibernate.onetoone;
 
-import com.hibernate.onetoone.unidirectional.samePK.dao.UserDao;
-import com.hibernate.onetoone.unidirectional.samePK.domain.Address;
-import com.hibernate.onetoone.unidirectional.samePK.domain.User;
+import com.hibernate.onetoone.samePK.UserSamePkCrudOperation;
+import com.hibernate.onetoone.samePK.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -18,15 +17,17 @@ public class OneToOneApplication implements CommandLineRunner {
 	@Autowired
 	private UserDao userDao;
 
+	@Autowired
+	private UserSamePkCrudOperation userCrudOperation;
+
 	@Override
 	public void run(String... args) throws Exception {
+
 		// Same primary key - Unidirectional
-		samePkUnidirectional();
+		userCrudOperation.crudOperation();
+
+
+
 	}
 
-	// Same primary key - Unidirectional
-	private void samePkUnidirectional() {
-		User user = new User("Vikash", "singh", new Address("Delhi"));
-		userDao.save(user);
-	}
 }
