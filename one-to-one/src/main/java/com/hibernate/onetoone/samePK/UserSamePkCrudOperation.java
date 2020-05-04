@@ -3,6 +3,8 @@ package com.hibernate.onetoone.samePK;
 import com.hibernate.onetoone.samePK.dao.UserDao;
 import com.hibernate.onetoone.samePK.domain.Address;
 import com.hibernate.onetoone.samePK.domain.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -11,26 +13,28 @@ import java.util.*;
 @Component
 public class UserSamePkCrudOperation {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserSamePkCrudOperation.class);
+
     @Autowired
     private UserDao userDao;
 
     public void crudOperation() {
-        System.out.println("------------ USER :: crudOperation ------------");
+        LOGGER.info("------------ USER :: crudOperation ------------");
 
         // Save User object
-        System.out.println("############ :: saveAll :: ############");
+        LOGGER.info("############ :: saveAll :: ############");
         saveAll();
 
         // Find User by Id
-        System.out.println("############ :: findUserById :: ############");
+        LOGGER.info("############ :: findUserById :: ############");
         findUserById(1);
 
         // delete User
-        System.out.println("############ :: delete :: ############");
+        LOGGER.info("############ :: delete :: ############");
         delete(1);
 
         // FindAll Users.
-        System.out.println("############ :: findAll :: ############");
+        LOGGER.info("############ :: findAll :: ############");
         findAll();
 
     }
@@ -49,7 +53,7 @@ public class UserSamePkCrudOperation {
     private User findUserById(long id) {
         Optional<User> optional = userDao.findById(id);
         User user = optional.isPresent() ? optional.get() : null;
-        System.out.println("User : "+user+", Address : "+user.getAddress());
+        LOGGER.info("User : {}, Address : {}", user, user.getAddress());
         return user;
     }
 
@@ -64,7 +68,7 @@ public class UserSamePkCrudOperation {
     // FindAll Users.
     private void findAll() {
         List<User> users = userDao.findAll();
-        users.forEach(user -> System.out.println("User : "+user+", Address : "+user.getAddress()));
+        users.forEach(user ->LOGGER.info("User : {}, Address : {}", user, user.getAddress()));
     }
 
 }

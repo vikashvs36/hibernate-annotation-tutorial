@@ -2,6 +2,8 @@ package com.hibernate.onetoone.samePK;
 
 import com.hibernate.onetoone.samePK.dao.AddressDao;
 import com.hibernate.onetoone.samePK.domain.Address;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -9,14 +11,16 @@ import java.util.Optional;
 
 @Component
 public class AddressSamePkCrudOperation {
-    
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AddressSamePkCrudOperation.class);
+
     @Autowired
     private AddressDao addressDao;
 
     public void crudOperation() {
-        System.out.println("------------ Address :: crudOperation ------------");
+        LOGGER.info("------------ Address :: crudOperation ------------");
         // Find User by Id
-        System.out.println("############ :: findUserById :: ############");
+        LOGGER.info("############ :: findUserById :: ############");
         findUserById(2);
 
     }
@@ -25,7 +29,7 @@ public class AddressSamePkCrudOperation {
     private Address findUserById(long id) {
         Optional<Address> optional = addressDao.findById(id);
         Address address = optional.isPresent() ? optional.get() : null;
-        System.out.println("Address : "+address+", User : "+address.getUser());
+        LOGGER.info("Address : {}, User : {}", address, address.getUser());
         return address;
     }
 
