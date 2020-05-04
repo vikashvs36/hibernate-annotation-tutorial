@@ -2,12 +2,11 @@ package com.hibernate.onetoone.samePK;
 
 import com.hibernate.onetoone.samePK.dao.AddressDao;
 import com.hibernate.onetoone.samePK.domain.Address;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class AddressSamePkCrudOperation {
@@ -19,9 +18,18 @@ public class AddressSamePkCrudOperation {
 
     public void crudOperation() {
         LOGGER.info("------------ Address :: crudOperation ------------");
+
         // Find User by Id
         LOGGER.info("############ :: findUserById :: ############");
         findUserById(2);
+
+        // delete User
+        LOGGER.info("############ :: delete :: ############");
+        delete(2);
+
+        // FindAll Users.
+        LOGGER.info("############ :: findAll :: ############");
+        findAll();
 
     }
 
@@ -31,6 +39,20 @@ public class AddressSamePkCrudOperation {
         Address address = optional.isPresent() ? optional.get() : null;
         LOGGER.info("Address : {}, User : {}", address, address.getUser());
         return address;
+    }
+
+    // Delete User if exist
+    private void delete(long id) {
+        Address address = findUserById(id);
+        if(address != null) {
+            addressDao.delete(address);
+        }
+    }
+
+    // FindAll Users.
+    private void findAll() {
+        List<Address> users = addressDao.findAll();
+        users.forEach(add ->LOGGER.info("Address : {}, User : {}", add, add.getUser()));
     }
 
 }

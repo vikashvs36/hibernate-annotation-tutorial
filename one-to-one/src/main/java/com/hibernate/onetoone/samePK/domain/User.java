@@ -15,6 +15,11 @@ public class User {
 
     public User() { }
 
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+     }
+
     public User(String username, String password, Address address) {
         this.username = username;
         this.password = password;
