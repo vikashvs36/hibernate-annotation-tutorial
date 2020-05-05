@@ -48,6 +48,8 @@ We will discuss three different type of mapping supported by hibernate, which is
 2. Foreign key
 3. Join table.  
 
+### Same primary key
+
 **Same primary key - Unidirectional**
 
 In this approach, Hibernate will insure that it will use a common primary key value in both the table.
@@ -69,10 +71,13 @@ In this approach, Hibernate will insure that it will use a common primary key va
         
     }        
  
-@GeneratedValue(generator= "custom_foreigngen"):- generatior will create custom table to manage id.
-@OneToOne :- this annotation is used to map one to one relationship.
-Cascade :- Cascase is used to give permision to perform operation type on both Table.
-@PrimaryKeyJoinColumn :- PrimaryKeyJoinColumn is used to create same primary key in owned class which is already used in Owner class.
+**@GeneratedValue(generator= "custom_foreigngen"):-** generatior will create custom table to manage id.
+
+**@OneToOne :-** this annotation is used to map one to one relationship.
+
+**Cascade :-** Cascase is used to give permision to perform operation type on both Table.
+
+**@PrimaryKeyJoinColumn :-** PrimaryKeyJoinColumn is used to create same primary key in owned class which is already used in Owner class.
 
 > Address class
 
@@ -162,5 +167,57 @@ mappedBy attribute are always put(annotated) on the inverse side of relation shi
     // Address Object log
     Address : Address{id=2, state='Noida'}, User : User{id=2, username='Anil', password='gupta'}
 
+### Foreign key
 
+Hibernate one-to-one mapping with foreign key association. In this type of association, a foreign key column is created 
+in owner entity. 
+
+This is an example of a one-to-one relationship, in this case between Book and Book_details entities.
+
+![](img/ontoone-foreignKey.png)
+
+**Implementing with a Foreign Key in JPA - Unidirectional**
+
+First, let's create the Book class and annotate it appropriately:
+
+    @Entity
+    public class Book {
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
+        private String name;
+        @OneToOne(cascade = CascadeType.ALL)
+        @JoinColumn(name = "bookDetails_id")
+        private BookDetail bookDetail;
+        
+        // getter, setter and contructor
+     }
  
+The Book_detail entity create as simple Pojo class:
+
+    @Entity
+    @Table(name = "book_detail")
+    public class BookDetail {
+        @Id
+        @GeneratedValue
+        private Long id;
+        private int numberOfPages;
+        
+        // Setter, getter and Constructor
+    }
+    
+> Output
+
+    // ########### Save() ###########  
+    Hibernate: insert into book_detail (number_of_pages) values (?)
+    Hibernate: insert into book (book_details_id, name) values (?, ?)
+    
+    // ########### FindBookById() ###########
+    Hibernate: select book0_.id as id1_1_0_, book0_.book_details_id as book_det3_1_0_, book0_.name as name2_1_0_, bookdetail1_.detail_id as detail_i1_2_1_, bookdetail1_.number_of_pages as number_o2_2_1_ from book book0_ left outer join book_detail bookdetail1_ on book0_.book_details_id=bookdetail1_.detail_id where book0_.id=?
+    Book{id=1, name='SCJP', bookDetail=BookDetail{id=1, numberOfPages=870}}
+    
+    // ########### delete() ###########
+    Hibernate: select book0_.id as id1_1_0_, book0_.book_details_id as book_det3_1_0_, book0_.name as name2_1_0_, bookdetail1_.detail_id as detail_i1_2_1_, bookdetail1_.number_of_pages as number_o2_2_1_ from book book0_ left outer join book_detail bookdetail1_ on book0_.book_details_id=bookdetail1_.detail_id where book0_.id=?
+    Book{id=2, name='K.C.SINHA', bookDetail=BookDetail{id=2, numberOfPages=435}}
+    Hibernate: delete from book where id=?
+    Hibernate: delete from book_detail where detail_id=?
