@@ -160,6 +160,9 @@ mappedBy attribute are always put(annotated) on the inverse side of relation shi
 
 **cascade :** Cascade is mapped for which type of operation wants to operate from Address side.
 
+**Note :** If cascade is not mentioning here, It will not give all permission to operate all operations from 
+bidirectional like delete. 
+
 > Output
 
     // Hibernate log
@@ -247,13 +250,18 @@ Just should be mentioned of relation on the only owned entity like given blow of
         private int numberOfPages;
     
         // name of mappedBy (bookDetails) is same as properties of BookDetails Object which is present in Book Object
-        @OneToOne(mappedBy = "bookDetail")
+        @OneToOne(mappedBy = "bookDetail", cascade = CascadeType.ALL)
         private Book book; 
         
         // Construcotor, Getter and Setter.
     } 
     
 **mappedBy :** mappedBy indicates the inverse of the relationship.
+
+**cascade :** Cascade is mapped for which type of operation wants to operate from BookDetails entity side.
+
+**Note :** If cascade is not mentioning here, It will not give all permission to operate all operations from 
+bidirectional like delete. 
 
 if the name of id column is different then need to mention on the owner side as well.
 
@@ -273,10 +281,26 @@ if the name of id column is different then need to mention on the owner side as 
 
 **@OneToOne :** Defines a one-to-one relationship between 2 entities.
 
-**cascade :** Cascade is mapped for which type of operation wants to operate from Address side.
+**cascade :** Cascade is mapped for which type of operation wants to operate from  BookDetails entity  side.
 
 **unique = true :** enforces the unique constraint, 1 book belongs to only 1 bookDetails object. If value of unique is 
 true then *many-to-one* works like *one-to-one* and *many-to-many* works like *one-to-many*
 
 **Note :** name of mappedBy (bookDetails) is same as properties name of BookDetails Object which is present in Book Object
 
+> Output 
+
+    // ########## FindById(1) ##########
+    Hibernate: select bookdetail0_.detail_id as detail_i1_2_0_, bookdetail0_.number_of_pages as number_o2_2_0_, book1_.id as id1_1_1_, book1_.details_id as details_3_1_1_, book1_.name as name2_1_1_ from book_detail bookdetail0_ left outer join book book1_ on bookdetail0_.detail_id=book1_.details_id where bookdetail0_.detail_id=?
+    BookDetail{id=1, numberOfPages=870}, Book{id=1, name='SCJP', bookDetail=BookDetail{id=1, numberOfPages=870}}
+    
+    // ########## delete(1) ##########
+    BookDetail{id=1, numberOfPages=870}, Book{id=1, name='SCJP', bookDetail=BookDetail{id=1, numberOfPages=870}}
+    Hibernate: select bookdetail0_.detail_id as detail_i1_2_0_, bookdetail0_.number_of_pages as number_o2_2_0_, book1_.id as id1_1_1_, book1_.details_id as details_3_1_1_, book1_.name as name2_1_1_ from book_detail bookdetail0_ left outer join book book1_ on bookdetail0_.detail_id=book1_.details_id where bookdetail0_.detail_id=?
+    Hibernate: delete from book where id=?
+    Hibernate: delete from book_detail where detail_id=?
+    
+    //  ########## FindAll() ##########
+    Hibernate: select bookdetail0_.detail_id as detail_i1_2_, bookdetail0_.number_of_pages as number_o2_2_ from book_detail bookdetail0_
+    Hibernate: select book0_.id as id1_1_1_, book0_.details_id as details_3_1_1_, book0_.name as name2_1_1_, bookdetail1_.detail_id as detail_i1_2_0_, bookdetail1_.number_of_pages as number_o2_2_0_ from book book0_ left outer join book_detail bookdetail1_ on book0_.details_id=bookdetail1_.detail_id where book0_.details_id=?
+    BookDetail{id=3, numberOfPages=435}, Book{id=3, name='STUDENT FRIENDS', bookDetail=BookDetail{id=3, numberOfPages=435}}

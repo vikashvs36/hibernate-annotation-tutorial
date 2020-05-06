@@ -13,7 +13,7 @@ public class BookDetail {
     private int numberOfPages;
 
     // name of mappedBy (bookDetails) is same as properties of BookDetails Object which is present in Book Object
-    @OneToOne(mappedBy = "bookDetail")
+    @OneToOne(mappedBy = "bookDetail", cascade = CascadeType.ALL)
     private Book book;
 
 
