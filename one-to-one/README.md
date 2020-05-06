@@ -176,7 +176,7 @@ This is an example of a one-to-one relationship, in this case between Book and B
 
 ![](img/ontoone-foreignKey.png)
 
-**Implementing with a Foreign Key in JPA - Unidirectional**
+#### Implementing with a Foreign Key - Unidirectional
 
 First, let's create the Book class and annotate it appropriately:
 
@@ -206,6 +206,15 @@ The Book_detail entity create as simple Pojo class:
         // Setter, getter and Constructor
     }
     
+**@OneToOne :** Defines a one-to-one relationship between 2 entities.
+
+**cascade :** Cascade is mapped for which type of operation wants to operate from Address side.
+
+**@JoinColumn :** defines foreign key column and indicates the owner of the relationship.
+
+**unique = true :** enforces the unique constraint, 1 book belongs to only 1 bookDetails object. If value of unique is 
+true then *many-to-one* works like *one-to-one* and *many-to-many* works like *one-to-many*
+    
 > Output
 
     // ########### Save() ###########  
@@ -221,3 +230,53 @@ The Book_detail entity create as simple Pojo class:
     Book{id=2, name='K.C.SINHA', bookDetail=BookDetail{id=2, numberOfPages=435}}
     Hibernate: delete from book where id=?
     Hibernate: delete from book_detail where detail_id=?
+
+
+#### Implementing with a Foreign Key - Bidirectional
+
+Just should be mentioned of relation on the only owned entity like given blow of bookDetails entity:
+
+    @Entity
+    @Table(name = "book_detail")
+    public class BookDetail {
+    
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        @Column(name = "detail_id")
+        private Long id;
+        private int numberOfPages;
+    
+        // name of mappedBy (bookDetails) is same as properties of BookDetails Object which is present in Book Object
+        @OneToOne(mappedBy = "bookDetail")
+        private Book book; 
+        
+        // Construcotor, Getter and Setter.
+    } 
+    
+**mappedBy :** mappedBy indicates the inverse of the relationship.
+
+if the name of id column is different then need to mention on the owner side as well.
+
+    @Entity
+    public class Book {
+    
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
+        private String name;
+        @OneToOne(cascade = CascadeType.ALL)
+        @JoinColumn(name = "details_id", unique = true)
+        private BookDetail bookDetail;
+        
+        // Constructor, Getter and Setter.
+    }
+
+**@OneToOne :** Defines a one-to-one relationship between 2 entities.
+
+**cascade :** Cascade is mapped for which type of operation wants to operate from Address side.
+
+**unique = true :** enforces the unique constraint, 1 book belongs to only 1 bookDetails object. If value of unique is 
+true then *many-to-one* works like *one-to-one* and *many-to-many* works like *one-to-many*
+
+**Note :** name of mappedBy (bookDetails) is same as properties name of BookDetails Object which is present in Book Object
+

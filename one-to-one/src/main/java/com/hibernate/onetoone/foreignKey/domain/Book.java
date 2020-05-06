@@ -10,7 +10,7 @@ public class Book {
     private Long id;
     private String name;
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "bookDetails_id")
+    @JoinColumn(name = "details_id", unique = true)
     private BookDetail bookDetail;
 
     public Book() { }

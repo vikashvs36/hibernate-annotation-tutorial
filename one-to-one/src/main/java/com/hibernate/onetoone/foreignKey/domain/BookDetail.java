@@ -12,10 +12,20 @@ public class BookDetail {
     private Long id;
     private int numberOfPages;
 
+    // name of mappedBy (bookDetails) is same as properties of BookDetails Object which is present in Book Object
+    @OneToOne(mappedBy = "bookDetail")
+    private Book book;
+
+
     public BookDetail() { }
 
     public BookDetail(int numberOfPages) {
         this.numberOfPages = numberOfPages;
+    }
+
+    public BookDetail(int numberOfPages, Book book) {
+        this.numberOfPages = numberOfPages;
+        this.book = book;
     }
 
     public Long getId() {
@@ -32,6 +42,14 @@ public class BookDetail {
 
     public void setNumberOfPages(int numberOfPages) {
         this.numberOfPages = numberOfPages;
+    }
+
+    public Book getBook() {
+        return book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
     }
 
     @Override

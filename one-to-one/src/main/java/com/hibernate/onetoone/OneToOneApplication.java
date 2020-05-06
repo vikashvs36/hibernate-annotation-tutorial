@@ -1,5 +1,6 @@
 package com.hibernate.onetoone;
 
+import com.hibernate.onetoone.foreignKey.BookDetailsForeginKeyCrudOperation;
 import com.hibernate.onetoone.foreignKey.BookForeignKeyCrudOperation;
 import com.hibernate.onetoone.samePK.AddressSamePkCrudOperation;
 import com.hibernate.onetoone.samePK.UserSamePkCrudOperation;
@@ -26,6 +27,9 @@ public class OneToOneApplication implements CommandLineRunner {
 	@Autowired
 	private BookForeignKeyCrudOperation bookForeignKeyCrudOperation;
 
+	@Autowired
+	private BookDetailsForeginKeyCrudOperation bookDetailsForeginKeyCrudOperation;
+
 	@Override
 	public void run(String... args) throws Exception {
 
@@ -37,6 +41,8 @@ public class OneToOneApplication implements CommandLineRunner {
 
 		// Foreign key - Unidirectional
 		bookForeignKeyCrudOperation.crudOperation();
+
+		bookDetailsForeginKeyCrudOperation.crudOperation();
 
 	}
 
