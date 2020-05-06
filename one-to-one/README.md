@@ -50,11 +50,14 @@ We will discuss three different type of mapping supported by hibernate, which is
 
 ### Same primary key
 
-**Same primary key - Unidirectional**
-
-In this approach, Hibernate will insure that it will use a common primary key value in both the table.
+In this approach owner and owned entity table are mapped by using the same primary values in the realted records.
 
 ![](img/onetoone-samePk.png)
+
+#### Same primary key - Unidirectional
+
+In this approach, Hibernate will insure that it will use a common primary key value in both the table. because of 
+unidirectional, we will be able to get only address from user side.
 
 > User class
 
@@ -114,7 +117,7 @@ After run this application below query will be perform by hibernate:
     Hibernate: insert into address (state, id) values (?, ?)
     Hibernate: insert into user (password, username, id) values (?, ?, ?)
     
-### Unidirectional - output
+> Output
 
 As log of the console, if you are going to find user then hibernate will get address as well because there are a relation 
 between user and address which is given below :   
@@ -132,9 +135,9 @@ there is only one Unidirectional mapping so need to map bidirectional as well.
      Hibernate: select address0_.id as id1_0_0_, address0_.state as state2_0_0_ from address address0_ where address0_.id=?
      Address : Address(id=2, state=Noida)
      
-**Same primary key - Bidirectional**
+#### Same primary key - Bidirectional
 
-The term “bidirectional” literally means “functioning in two directions”,  it means that we are able to access Object A 
+The term bidirectional literally means functioning in two directions,  it means that we are able to access Object A 
 from Object B, and Object B from Object A. and we will able to operate all operation from both side. Till now, We are able 
 to get address object from user side but Address is unknown that associated from which User.
 
@@ -304,3 +307,102 @@ true then *many-to-one* works like *one-to-one* and *many-to-many* works like *o
     Hibernate: select bookdetail0_.detail_id as detail_i1_2_, bookdetail0_.number_of_pages as number_o2_2_ from book_detail bookdetail0_
     Hibernate: select book0_.id as id1_1_1_, book0_.details_id as details_3_1_1_, book0_.name as name2_1_1_, bookdetail1_.detail_id as detail_i1_2_0_, bookdetail1_.number_of_pages as number_o2_2_0_ from book book0_ left outer join book_detail bookdetail1_ on book0_.details_id=bookdetail1_.detail_id where book0_.details_id=?
     BookDetail{id=3, numberOfPages=435}, Book{id=3, name='STUDENT FRIENDS', bookDetail=BookDetail{id=3, numberOfPages=435}}
+
+### Join table
+
+Join table is also known as **Relation Entity mapping**. In this approach, we will see that the owner and owned entity table are linked with the help of the relation table which contains the primary key of both the tables as foreign keys.
+
+Here we will take the example of *Category and Article* entities. The primary key of both tables will be linked with the help of the relation table that is *CategoryArtical*. As you can see the given picture below : 
+
+![](img/one-to-one_relation-table.png)
+
+#### Implementing with a Join table - Unidirectional
+
+First, let's create the *Category* class and annotate it appropriately:
+
+    @Entity
+    public class Category {
+    
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
+        private String name;
+    
+        @OneToOne(cascade = CascadeType.ALL)
+        @JoinTable(name = "category_article",
+                    joinColumns = {
+                            @JoinColumn(name = "category_id_FK", referencedColumnName = "id")
+                    },
+                    inverseJoinColumns = {
+                            @JoinColumn(name = "artical_id_FK", referencedColumnName = "id", unique = true)
+                    }
+        
+        )
+        private Article article;
+       
+        // Constructor, Setter and Getter
+    }    
+
+**@JoinTable :** JoinTable annotation is mark for create the relation table where the primary key of both tables will 
+be linked as foreign key. 
+* **name** indecate the relation table name.
+* **joinColumns** joinColumns need to specify for customize column name of owner entity in relation table.
+    * **JoinColumn - name :** Name can be anything which you want to customize join column name of owner entity 
+    in relation table  
+    * **JoinColumn - referencedColumnName :** referencedColumnName should be same as owner entity primary key.
+    
+* **inverseJoinColumns** inverseJoinColumns need to specify for customize column name of owned entity in relation table.
+    * **JoinColumn - name :** Name can be anything which you want to customize join column name of owned entity 
+        in relation table  
+    * **JoinColumn - referencedColumnName :** referencedColumnName should be same as owned entity primary key.
+
+The *Article* entity create as simple POJO class:
+
+    @Entity
+    public class Article {
+    
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private long id;
+        private String title, discreption;
+        
+        // Constructor, Setter and Getter
+    }   
+
+> Output
+
+    // ---------- Article :: crudOperation ----------
+    // ########## saveAll() ##########
+    Hibernate: insert into article (discreption, title) values (?, ?)
+    Hibernate: insert into category (name) values (?)
+    Hibernate: insert into category_article (article_id, id) values (?, ?)
+    Hibernate: insert into article (discreption, title) values (?, ?)
+    Hibernate: insert into category (name) values (?)
+    Hibernate: insert into category_article (article_id, id) values (?, ?)
+    Hibernate: insert into article (discreption, title) values (?, ?)
+    Hibernate: insert into category (name) values (?)
+    Hibernate: insert into category_article (article_id, id) values (?, ?)
+    Hibernate: insert into article (discreption, title) values (?, ?)
+    Hibernate: insert into category (name) values (?)
+    Hibernate: insert into category_article (article_id, id) values (?, ?)
+    
+    // ########## findCategoryById(1) ##########
+    Hibernate: select category0_.id as id1_4_0_, category0_.name as name2_4_0_, category0_1_.article_id as article_1_5_0_, article1_.id as id1_1_1_, article1_.discreption as discrept2_1_1_, article1_.title as title3_1_1_ from category category0_ left outer join category_article category0_1_ on category0_.id=category0_1_.id left outer join article article1_ on category0_1_.article_id=article1_.id where category0_.id=?
+    // Category{id=1, name='name_1', article=Article{id=1, title='title_1', discreption='discreption_1'}}
+    
+    // ########## deleteCategory(1) ##########
+    Hibernate: select category0_.id as id1_4_0_, category0_.name as name2_4_0_, category0_1_.article_id as article_1_5_0_, article1_.id as id1_1_1_, article1_.discreption as discrept2_1_1_, article1_.title as title3_1_1_ from category category0_ left outer join category_article category0_1_ on category0_.id=category0_1_.id left outer join article article1_ on category0_1_.article_id=article1_.id where category0_.id=?
+    Category{id=1, name='name_1', article=Article{id=1, title='title_1', discreption='discreption_1'}}
+    Hibernate: select category0_.id as id1_4_0_, category0_.name as name2_4_0_, category0_1_.article_id as article_1_5_0_, article1_.id as id1_1_1_, article1_.discreption as discrept2_1_1_, article1_.title as title3_1_1_ from category category0_ left outer join category_article category0_1_ on category0_.id=category0_1_.id left outer join article article1_ on category0_1_.article_id=article1_.id where category0_.id=?
+    Hibernate: delete from category_article where id=?
+    Hibernate: delete from category where id=?
+    Hibernate: delete from article where id=?
+    
+    // ########## findAllCategory(1) ##########
+    Hibernate: select category0_.id as id1_4_, category0_.name as name2_4_, category0_1_.article_id as article_1_5_ from category category0_ left outer join category_article category0_1_ on category0_.id=category0_1_.id
+    Hibernate: select article0_.id as id1_1_0_, article0_.discreption as discrept2_1_0_, article0_.title as title3_1_0_ from article article0_ where article0_.id=?
+    Hibernate: select article0_.id as id1_1_0_, article0_.discreption as discrept2_1_0_, article0_.title as title3_1_0_ from article article0_ where article0_.id=?
+    Hibernate: select article0_.id as id1_1_0_, article0_.discreption as discrept2_1_0_, article0_.title as title3_1_0_ from article article0_ where article0_.id=?
+    Category{id=2, name='name_2', article=Article{id=2, title='title_2', discreption='discreption_2'}}
+    Category{id=3, name='name_3', article=Article{id=3, title='title_3', discreption='discreption_3'}}
+    Category{id=4, name='name_4', article=Article{id=4, title='title_4', discreption='discreption_4'}} 

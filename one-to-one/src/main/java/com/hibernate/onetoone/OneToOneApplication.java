@@ -2,6 +2,7 @@ package com.hibernate.onetoone;
 
 import com.hibernate.onetoone.foreignKey.BookDetailsForeginKeyCrudOperation;
 import com.hibernate.onetoone.foreignKey.BookForeignKeyCrudOperation;
+import com.hibernate.onetoone.join_table.CategoryCrudOperation;
 import com.hibernate.onetoone.samePK.AddressSamePkCrudOperation;
 import com.hibernate.onetoone.samePK.UserSamePkCrudOperation;
 import com.hibernate.onetoone.samePK.dao.UserDao;
@@ -30,6 +31,9 @@ public class OneToOneApplication implements CommandLineRunner {
 	@Autowired
 	private BookDetailsForeginKeyCrudOperation bookDetailsForeginKeyCrudOperation;
 
+	@Autowired
+	private CategoryCrudOperation categoryOperation;
+
 	@Override
 	public void run(String... args) throws Exception {
 
@@ -40,9 +44,14 @@ public class OneToOneApplication implements CommandLineRunner {
 //		addressSamePkCrudOperation.crudOperation();
 
 		// Foreign key - Unidirectional
-		bookForeignKeyCrudOperation.crudOperation();
+//		bookForeignKeyCrudOperation.crudOperation();
 
-		bookDetailsForeginKeyCrudOperation.crudOperation();
+		// Foreign key - Bidirectional
+//		bookDetailsForeginKeyCrudOperation.crudOperation();
+
+		// Join Table - Unidirectional
+		categoryOperation.crudOperation();
+
 
 	}
 
