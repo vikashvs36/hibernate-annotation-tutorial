@@ -18,7 +18,7 @@ public class CategoryCrudOperation {
     private CategoryDao categoryDao;
 
     public void crudOperation() {
-        LOGGER.info("---------- Article :: crudOperation ----------");
+        LOGGER.info("---------- Category :: crudOperation ----------");
 
         LOGGER.info("########## saveAll() ##########");
         saveAll();

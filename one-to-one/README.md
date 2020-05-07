@@ -384,7 +384,7 @@ The *Article* entity create as simple POJO class:
 
 > Output
 
-    // ---------- Article :: crudOperation ----------
+    // ---------- Category :: crudOperation ----------
     // ########## saveAll() ##########
     Hibernate: insert into article (discreption, title) values (?, ?)
     Hibernate: insert into category (name) values (?)
