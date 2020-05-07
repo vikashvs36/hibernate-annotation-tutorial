@@ -331,12 +331,11 @@ First, let's create the *Category* class and annotate it appropriately:
         @OneToOne(cascade = CascadeType.ALL)
         @JoinTable(name = "category_article",
                     joinColumns = {
-                            @JoinColumn(name = "category_id_FK", referencedColumnName = "id")
+                            @JoinColumn(name = "category_id_FK", referencedColumnName = "id", nullable = false)
                     },
                     inverseJoinColumns = {
-                            @JoinColumn(name = "artical_id_FK", referencedColumnName = "id", unique = true)
+                            @JoinColumn(name = "artical_id_FK", referencedColumnName = "id", unique = true, nullable = false)
                     }
-        
         )
         private Article article;
        
@@ -346,21 +345,29 @@ First, let's create the *Category* class and annotate it appropriately:
 **@JoinTable :** JoinTable annotation is mark for create the relation table where the primary key of both tables will 
 be linked as foreign key. 
 * **name** indecate the relation table name.
-* **joinColumns** joinColumns need to specify for customize column name of owner entity in relation table.
+* **joinColumns** joinColumns need to specify for customize column name of owner entity in relation table. It's optional.
     * **JoinColumn - name :** Name can be anything which you want to customize join column name of owner entity 
     in relation table  
-    * **JoinColumn - referencedColumnName :** referencedColumnName should be same as owner entity primary key.
+    * **JoinColumn - referencedColumnName :** referencedColumnName should be same as owner entity primary key. It's 
+    optional, main purpose of the *referencedColumnName* is to specify which primary column name to make foreign key. 
+    * **nullable :** by default nullable value is true. if you don't want to insert nullable value then you can specify 
+    nullable = false
     
 * **inverseJoinColumns** inverseJoinColumns need to specify for customize column name of owned entity in relation table.
+It's optional.
     * **JoinColumn - name :** Name can be anything which you want to customize join column name of owned entity 
         in relation table  
-    * **JoinColumn - referencedColumnName :** referencedColumnName should be same as owned entity primary key.
+    * **JoinColumn - referencedColumnName :** referencedColumnName should be same as owned entity primary key. It's 
+    optional, main purpose of the *referencedColumnName* is to specify which primary column name to make foreign key.
+    * **unique = true :** enforces the unique constraint, 1 book belongs to only 1 bookDetails object. If value of unique is 
+      true then *many-to-one* works like *one-to-one* and *many-to-many* works like *one-to-many*
+    * **nullable :** by default nullable value is true. if you don't want to insert nullable value then you can specify 
+        nullable = false
 
 The *Article* entity create as simple POJO class:
 
     @Entity
     public class Article {
-    
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private long id;

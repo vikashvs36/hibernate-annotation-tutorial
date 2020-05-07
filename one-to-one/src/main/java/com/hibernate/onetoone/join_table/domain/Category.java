@@ -13,12 +13,11 @@ public class Category {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinTable(name = "category_article",
             joinColumns = {
-                    @JoinColumn(name = "category_id_FK", referencedColumnName = "id")
+                    @JoinColumn(name = "category_id_FK", referencedColumnName = "id", nullable = false)
             },
             inverseJoinColumns = {
-                    @JoinColumn(name = "artical_id_FK", referencedColumnName = "id", unique = true)
+                    @JoinColumn(name = "artical_id_FK", referencedColumnName = "id", unique = true, nullable = false)
             }
-
     )
     private Article article;
 
