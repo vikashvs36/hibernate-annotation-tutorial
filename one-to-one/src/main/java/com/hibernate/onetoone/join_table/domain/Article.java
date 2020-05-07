@@ -10,11 +10,20 @@ public class Article {
     private long id;
     private String title, discreption;
 
+    @OneToOne(mappedBy = "article", cascade = CascadeType.ALL)
+    private Category category;
+
     public Article() { }
 
     public Article(String title, String discreption) {
         this.title = title;
         this.discreption = discreption;
+    }
+
+    public Article(String title, String discreption, Category category) {
+        this.title = title;
+        this.discreption = discreption;
+        this.category = category;
     }
 
     public long getId() {
@@ -41,12 +50,21 @@ public class Article {
         this.discreption = discreption;
     }
 
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
     @Override
     public String toString() {
         return "Article{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", discreption='" + discreption + '\'' +
+                ", category=" + category +
                 '}';
     }
 }

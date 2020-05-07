@@ -159,7 +159,7 @@ Need to understand *@OneToOne(mappedBy = "address", cascade = CascadeType.ALL).*
 **@OneToOne :** @OneToOne annotation is need to mark on User type property in Address object. 
 
 **mappedBy :** The value of mappedBy is the name of the association-mapping attribute on the owning side.  
-mappedBy attribute are always put(annotated) on the inverse side of relation ship 
+mappedBy attribute are always put(annotated) on the inverse side of relationship. 
 
 **cascade :** Cascade is mapped for which type of operation wants to operate from Address side.
 
@@ -172,6 +172,9 @@ bidirectional like delete.
     Hibernate: select address0_.id as id1_0_0_, address0_.state as state2_0_0_, user1_.id as id1_1_1_, user1_.password as password2_1_1_, user1_.username as username3_1_1_ from address address0_ left outer join user user1_ on address0_.id=user1_.id where address0_.id=?
     // Address Object log
     Address : Address{id=2, state='Noida'}, User : User{id=2, username='Anil', password='gupta'}
+    
+    LOGGER.info("########## saveAddress() ##########");
+    // We can't operate save operation from owned side
 
 ### Foreign key
 
@@ -297,6 +300,9 @@ true then *many-to-one* works like *one-to-one* and *many-to-many* works like *o
     Hibernate: select bookdetail0_.detail_id as detail_i1_2_0_, bookdetail0_.number_of_pages as number_o2_2_0_, book1_.id as id1_1_1_, book1_.details_id as details_3_1_1_, book1_.name as name2_1_1_ from book_detail bookdetail0_ left outer join book book1_ on bookdetail0_.detail_id=book1_.details_id where bookdetail0_.detail_id=?
     BookDetail{id=1, numberOfPages=870}, Book{id=1, name='SCJP', bookDetail=BookDetail{id=1, numberOfPages=870}}
     
+    LOGGER.info("########## saveBookDetail() ##########");
+    // We can't operate save operation from owned side
+    
     // ########## delete(1) ##########
     BookDetail{id=1, numberOfPages=870}, Book{id=1, name='SCJP', bookDetail=BookDetail{id=1, numberOfPages=870}}
     Hibernate: select bookdetail0_.detail_id as detail_i1_2_0_, bookdetail0_.number_of_pages as number_o2_2_0_, book1_.id as id1_1_1_, book1_.details_id as details_3_1_1_, book1_.name as name2_1_1_ from book_detail bookdetail0_ left outer join book book1_ on bookdetail0_.detail_id=book1_.details_id where bookdetail0_.detail_id=?
@@ -413,3 +419,54 @@ The *Article* entity create as simple POJO class:
     Category{id=2, name='name_2', article=Article{id=2, title='title_2', discreption='discreption_2'}}
     Category{id=3, name='name_3', article=Article{id=3, title='title_3', discreption='discreption_3'}}
     Category{id=4, name='name_4', article=Article{id=4, title='title_4', discreption='discreption_4'}} 
+    
+#### Implementing with a Join table - Bidirectional
+
+We need to mappedBy only from owned entity side. So should be change only Article entity. Let's change:
+
+    @Entity
+    public class Article {
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private long id;
+        private String title, discreption;
+    
+        @OneToOne(mappedBy = "article", cascade = CascadeType.ALL)
+        private Category category;
+        
+        // constructor, setter and getter. 
+    }
+    
+**@OneToOne :-** this annotation is used to map one to one relationship.
+
+**mappedBy :** The value of mappedBy is the name of the association-mapping attribute on the owning side.  
+mappedBy attribute are always put(annotated) on the inverse side of relationship.
+
+**Cascade :-** Cascase is used to give permision to perform operation type on both Table.
+
+> Output 
+
+    // ---------- Article :: crudOperation ----------
+    
+    LOGGER.info("########## saveAritcle() ##########");
+    // We can't operate save operation from owned side
+    
+    // ########## findAritcleById(4) ##########
+    Hibernate: select article0_.id as id1_1_0_, article0_.discreption as discrept2_1_0_, article0_.title as title3_1_0_, article0_1_.category_id_fk as category0_5_0_, category1_.id as id1_4_1_, category1_.name as name2_4_1_, category1_1_.artical_id_fk as artical_1_5_1_, article2_.id as id1_1_2_, article2_.discreption as discrept2_1_2_, article2_.title as title3_1_2_, article2_1_.category_id_fk as category0_5_2_ from article article0_ left outer join category_article article0_1_ on article0_.id=article0_1_.artical_id_fk left outer join category category1_ on article0_1_.category_id_fk=category1_.id left outer join category_article category1_1_ on category1_.id=category1_1_.category_id_fk left outer join article article2_ on category1_1_.artical_id_fk=article2_.id left outer join category_article article2_1_ on article2_.id=article2_1_.artical_id_fk where article0_.id=?
+    Article{id=4, title='title_4', discreption='discreption_4', category=Category{id=4, name='name_4'}}
+    
+    // ########## deleteAritcleById(4) ##########
+    Hibernate: select article0_.id as id1_1_0_, article0_.discreption as discrept2_1_0_, article0_.title as title3_1_0_, article0_1_.category_id_fk as category0_5_0_, category1_.id as id1_4_1_, category1_.name as name2_4_1_, category1_1_.artical_id_fk as artical_1_5_1_, article2_.id as id1_1_2_, article2_.discreption as discrept2_1_2_, article2_.title as title3_1_2_, article2_1_.category_id_fk as category0_5_2_ from article article0_ left outer join category_article article0_1_ on article0_.id=article0_1_.artical_id_fk left outer join category category1_ on article0_1_.category_id_fk=category1_.id left outer join category_article category1_1_ on category1_.id=category1_1_.category_id_fk left outer join article article2_ on category1_1_.artical_id_fk=article2_.id left outer join category_article article2_1_ on article2_.id=article2_1_.artical_id_fk where article0_.id=?
+    Article{id=4, title='title_4', discreption='discreption_4', category=Category{id=4, name='name_4'}}
+    Hibernate: delete from category_article where category_id_fk=?
+    Hibernate: delete from article where id=?
+    Hibernate: delete from category_article where category_id_fk=?
+    Hibernate: delete from category where id=?
+    
+    // ########## findAllAritcle() ##########
+    Hibernate: select article0_.id as id1_1_, article0_.discreption as discrept2_1_, article0_.title as title3_1_, article0_1_.category_id_fk as category0_5_ from article article0_ left outer join category_article article0_1_ on article0_.id=article0_1_.artical_id_fk
+    Hibernate: select category0_.id as id1_4_0_, category0_.name as name2_4_0_, category0_1_.artical_id_fk as artical_1_5_0_, article1_.id as id1_1_1_, article1_.discreption as discrept2_1_1_, article1_.title as title3_1_1_, article1_1_.category_id_fk as category0_5_1_, category2_.id as id1_4_2_, category2_.name as name2_4_2_, category2_1_.artical_id_fk as artical_1_5_2_ from category category0_ left outer join category_article category0_1_ on category0_.id=category0_1_.category_id_fk left outer join article article1_ on category0_1_.artical_id_fk=article1_.id left outer join category_article article1_1_ on article1_.id=article1_1_.artical_id_fk left outer join category category2_ on article1_1_.category_id_fk=category2_.id left outer join category_article category2_1_ on category2_.id=category2_1_.category_id_fk where category0_.id=?
+    Hibernate: select category0_.id as id1_4_0_, category0_.name as name2_4_0_, category0_1_.artical_id_fk as artical_1_5_0_, article1_.id as id1_1_1_, article1_.discreption as discrept2_1_1_, article1_.title as title3_1_1_, article1_1_.category_id_fk as category0_5_1_, category2_.id as id1_4_2_, category2_.name as name2_4_2_, category2_1_.artical_id_fk as artical_1_5_2_ from category category0_ left outer join category_article category0_1_ on category0_.id=category0_1_.category_id_fk left outer join article article1_ on category0_1_.artical_id_fk=article1_.id left outer join category_article article1_1_ on article1_.id=article1_1_.artical_id_fk left outer join category category2_ on article1_1_.category_id_fk=category2_.id left outer join category_article category2_1_ on category2_.id=category2_1_.category_id_fk where category0_.id=?
+    Article{id=2, title='title_2', discreption='discreption_2', category=Category{id=2, name='name_2'}}
+    Article{id=3, title='title_3', discreption='discreption_3', category=Category{id=3, name='name_3'}}
+

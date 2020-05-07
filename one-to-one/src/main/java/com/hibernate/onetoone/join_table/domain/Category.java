@@ -61,7 +61,7 @@ public class Category {
         return "Category{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", article=" + article +
+//                ", article=" + article +
                 '}';
     }
 }
