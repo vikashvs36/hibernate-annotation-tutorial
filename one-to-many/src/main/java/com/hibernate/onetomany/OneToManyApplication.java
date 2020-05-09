@@ -23,8 +23,8 @@ public class OneToManyApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-//		LOGGER.info("----------------- CartForeignKeyService :: CrudOperation -----------------");
-//		cartService();
+		LOGGER.info("----------------- CartForeignKeyService :: CrudOperation -----------------");
+		cartService();
 
 
 	}

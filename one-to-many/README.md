@@ -140,5 +140,39 @@ In foreign key - Unidirectional, If you want to go one step ahead like for crud 
     you can customize it as well as given above.  
     * **referencedColumnName :** is defaulted to the primary key of the preferenced table.
 
-We need to avoid one-to-many unidirectional associations. Otherwise, Hibernate might create unexpected tables and execute more SQL statements than you expected.
+Need to perform crud operation 
 
+> Output
+
+    ----------------- CartForeignKeyService :: CrudOperation -----------------
+    ############ saveAllCart()  ############
+    Hibernate: insert into cart (name, total) values (?, ?)
+    Hibernate: insert into item (iteam_total, name, quantity) values (?, ?, ?)
+    Hibernate: insert into item (iteam_total, name, quantity) values (?, ?, ?)
+    Hibernate: insert into cart (name, total) values (?, ?)
+    Hibernate: insert into item (iteam_total, name, quantity) values (?, ?, ?)
+    Hibernate: insert into item (iteam_total, name, quantity) values (?, ?, ?)
+    Hibernate: update item set cart_id_fk=? where item_id=?
+    Hibernate: update item set cart_id_fk=? where item_id=?
+    Hibernate: update item set cart_id_fk=? where item_id=?
+    Hibernate: update item set cart_id_fk=? where item_id=?
+    
+    ############ findCartById(1)  ############
+    Hibernate: select cart0_.cart_id as cart_id1_0_0_, cart0_.name as name2_0_0_, cart0_.total as total3_0_0_, items1_.cart_id_fk as cart_id_5_1_1_, items1_.item_id as item_id1_1_1_, items1_.item_id as item_id1_1_2_, items1_.iteam_total as iteam_to2_1_2_, items1_.name as name3_1_2_, items1_.quantity as quantity4_1_2_ from cart cart0_ left outer join item items1_ on cart0_.cart_id=items1_.cart_id_fk where cart0_.cart_id=?
+    Cart{id=1, name='Books', total=18000.00, items=[Item{id=2, name='Design pattern', iteamTotal=236.00, quantity=30}, Item{id=1, name='SCJP', iteamTotal=546.00, quantity=20}]}
+    
+    ############ deleteCartById(1)  ############
+    Cart{id=1, name='Books', total=18000.00, items=[Item{id=2, name='Design pattern', iteamTotal=236.00, quantity=30}, Item{id=1, name='SCJP', iteamTotal=546.00, quantity=20}]}
+    Hibernate: select cart0_.cart_id as cart_id1_0_0_, cart0_.name as name2_0_0_, cart0_.total as total3_0_0_, items1_.cart_id_fk as cart_id_5_1_1_, items1_.item_id as item_id1_1_1_, items1_.item_id as item_id1_1_2_, items1_.iteam_total as iteam_to2_1_2_, items1_.name as name3_1_2_, items1_.quantity as quantity4_1_2_ from cart cart0_ left outer join item items1_ on cart0_.cart_id=items1_.cart_id_fk where cart0_.cart_id=?
+    Hibernate: update item set cart_id_fk=null where cart_id_fk=?
+    Hibernate: delete from item where item_id=?
+    Hibernate: delete from item where item_id=?
+    Hibernate: delete from cart where cart_id=?
+    
+    ############ findAllCart()  ############
+    Hibernate: select cart0_.cart_id as cart_id1_0_, cart0_.name as name2_0_, cart0_.total as total3_0_ from cart cart0_
+    Hibernate: select items0_.cart_id_fk as cart_id_5_1_0_, items0_.item_id as item_id1_1_0_, items0_.item_id as item_id1_1_1_, items0_.iteam_total as iteam_to2_1_1_, items0_.name as name3_1_1_, items0_.quantity as quantity4_1_1_ from item items0_ where items0_.cart_id_fk=?
+    Cart{id=2, name='Electronic', total=161276.00, items=[Item{id=4, name='Phone', iteamTotal=23546.00, quantity=5}, Item{id=3, name='Laptop', iteamTotal=43546.00, quantity=1}]}
+
+We need to avoid one-to-many unidirectional associations. Otherwise, Hibernate might create unexpected tables and execute more SQL statements than you expected.
+ 

@@ -15,7 +15,7 @@ public class Cart {
     private String name;
     private BigDecimal total;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "cart_id_fk")
     private Set<Item> items;
 
@@ -77,7 +77,7 @@ public class Cart {
                 "id=" + this.getId() +
                 ", name='" + this.getName() + '\'' +
                 ", total=" + this.getTotal() +
-//                ", items=" + this.getItems() +
+                ", items=" + this.getItems() +
                 '}';
     }
 }
