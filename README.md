@@ -33,6 +33,12 @@ Has-A Relation can be of **4** types :-
 
 In unidirectional relation, on the owner entity contain the reference of the owned entity. Where as in a bidirectional relation, both entities contains the reference of each other. Here I have used two new words Owner and Owned entity. let's understand.
 
+### Default Fetching Policy In JPA
+
+JPA has taken a different approach and decided that to-many associations be LAZY while to-one relationships are fetched eagerly.
+
+![](img/default_fetching_policy.png)
+
 ### Understanding of owner entity and owned entity
 
 In order to understand the mapping of a has-A relation, we must understand the responsibility of the owner and owned entities.
