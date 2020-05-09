@@ -37,7 +37,7 @@ In unidirectional relation, on the owner entity contain the reference of the own
 
 JPA has taken a different approach and decided that to-many associations be LAZY while to-one relationships are fetched eagerly.
 
-![](img/default_fetching_policy.png)
+![](one-to-one/img/default_fetching_policy.png)
 
 ### Understanding of owner entity and owned entity
 
