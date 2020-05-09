@@ -10,12 +10,13 @@ public class Cart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cart_id")
     private Long id;
     private String name;
     private BigDecimal total;
 
-    @OneToMany(cascade = CascadeType.ALL, targetEntity = Item.class, fetch = FetchType.EAGER)
-    @JoinColumn(name = "cart_id", referencedColumnName = "id")
+    @OneToMany
+    @JoinColumn(name = "cart_id_fk")
     private Set<Item> items;
 
     public Cart() { }
@@ -76,7 +77,7 @@ public class Cart {
                 "id=" + this.getId() +
                 ", name='" + this.getName() + '\'' +
                 ", total=" + this.getTotal() +
-                ", items=" + this.getItems() +
+//                ", items=" + this.getItems() +
                 '}';
     }
 }
